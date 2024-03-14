@@ -117,7 +117,7 @@ class CountryPicker extends StatelessWidget {
         } else {
           _selectCountry(context, displayCountry);
         }
-      },
+      }
       }
     );
   }

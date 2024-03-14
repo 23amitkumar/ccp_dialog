@@ -25,7 +25,7 @@ class CountryPicker extends StatelessWidget {
     this.currencyISOTextStyle,
     this.isNationality = false,
     this.withBottomSheet = false,
-    this.enabled = false;
+    this.enabled = false
   }) : super(key: key);
 
   final Country selectedCountry;

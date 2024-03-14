@@ -25,6 +25,7 @@ class CountryPicker extends StatelessWidget {
     this.currencyISOTextStyle,
     this.isNationality = false,
     this.withBottomSheet = false,
+    this.enabled = false;
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -32,6 +33,7 @@ class CountryPicker extends StatelessWidget {
   final bool dense;
   final Color? colorArrow;
   final bool withBottomSheet;
+  final bool enabled;
   final bool showFlag;
   final bool showFlagCircle;
   final bool showLine;
@@ -109,12 +111,14 @@ class CountryPicker extends StatelessWidget {
         ],
       ),
       onTap: () {
+        if(!enabled){
         if (withBottomSheet) {
           _selectCountryWithBottomSheet(context, displayCountry);
         } else {
           _selectCountry(context, displayCountry);
         }
       },
+      }
     );
   }
 

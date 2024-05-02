@@ -16,7 +16,6 @@ class CountryPicker extends StatelessWidget {
     this.showFlag = true,
     this.showFlagCircle = false,
     this.showDialingCode = false,
-    this.isShowDialog = true,
     this.showName = true,
     this.showCurrency = false,
     this.showCurrencyISO = false,
@@ -41,7 +40,6 @@ class CountryPicker extends StatelessWidget {
   final bool showFlagCircle;
   final bool showLine;
   final bool showDialingCode;
-  final bool isShowDialog;
   final bool showName;
   final bool showCurrency;
   final bool showCurrencyISO;
@@ -116,17 +114,13 @@ class CountryPicker extends StatelessWidget {
               )
           ],
         ),
-        onTap: () {
-          if(isShowDialog == true){
-          if(!enabled){
+        onTap:!enabled? () {
             if (withBottomSheet) {
               _selectCountryWithBottomSheet(context, displayCountry);
             } else {
               _selectCountry(context, displayCountry);
             }
-          }
-        }
-      }
+      }:(){}
     );
   }
 

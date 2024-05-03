@@ -26,7 +26,7 @@ class CountryPicker extends StatelessWidget {
     this.currencyISOTextStyle,
     this.isNationality = false,
     this.withBottomSheet = false,
-    this.enabled = false
+    this.enabled = true
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -114,7 +114,7 @@ class CountryPicker extends StatelessWidget {
               )
           ],
         ),
-        onTap:!enabled? () {
+        onTap:enabled? () {
             if (withBottomSheet) {
               _selectCountryWithBottomSheet(context, displayCountry);
             } else {
@@ -148,13 +148,13 @@ class CountryPicker extends StatelessWidget {
                   : Colors.white70)),
         ],
       ),
-      onTap: () {
+      onTap:enabled? () {
         if (withBottomSheet) {
           _selectCountryWithBottomSheet(context, displayCountry);
         } else {
           _selectCountry(context, displayCountry);
         }
-      },
+      }:(){},
     );
   }
   
@@ -181,13 +181,13 @@ class CountryPicker extends StatelessWidget {
                   : Colors.white70)),
         ],
       ),
-      onTap: () {
+      onTap:enabled? () {
         if (withBottomSheet) {
           _selectCountryWithBottomSheet(context, displayCountry);
         } else {
           _selectCountry(context, displayCountry);
         }
-      },
+      }:(){},
     );
   }
 

@@ -26,7 +26,8 @@ class CountryPicker extends StatelessWidget {
     this.currencyISOTextStyle,
     this.isNationality = false,
     this.withBottomSheet = false,
-    this.enabled = true
+    this.enabled = true,
+    this.showArrow = true,
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -37,6 +38,7 @@ class CountryPicker extends StatelessWidget {
   final bool withBottomSheet;
   final bool enabled;
   final bool showFlag;
+  final bool showArrow;
   final bool showFlagCircle;
   final bool showLine;
   final bool showDialingCode;
@@ -55,15 +57,27 @@ class CountryPicker extends StatelessWidget {
     Country displayCountry = selectedCountry;
     bool showFlagAsset = showFlag;
     bool showFlagCircleAsset = showFlagCircle;
+    bool isShowArrow = showArrow;
     return dense
-        ? (showOnlyIcon?
-           _renderIconDisplay(context, displayCountry, showFlagAsset, showFlagCircleAsset):
-           _renderDenseDisplay(context, displayCountry, showFlagAsset,showFlagCircleAsset))
+        ? (showOnlyIcon
+            ? _renderIconDisplay(context, displayCountry, showFlagAsset,
+                showFlagCircleAsset, isShowArrow)
+            : _renderDenseDisplay(context, displayCountry, showFlagAsset,
+                showFlagCircleAsset, isShowArrow))
         : _renderDefaultDisplay(context, displayCountry);
   }
 
   _renderDefaultDisplay(BuildContext context, Country displayCountry) {
     return InkWell(
+        onTap: enabled
+            ? () {
+                if (withBottomSheet) {
+                  _selectCountryWithBottomSheet(context, displayCountry);
+                } else {
+                  _selectCountry(context, displayCountry);
+                }
+              }
+            : () {},
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -72,11 +86,13 @@ class CountryPicker extends StatelessWidget {
                 displayCountry.asset,
                 style: const TextStyle(fontSize: 32),
               ),
-
             if (showFlagCircle)
               Padding(
                 padding: const EdgeInsets.all(9),
-                child: Image.asset(displayCountry.assetCircleFlag, package: 'ccp_dialog',),
+                child: Image.asset(
+                  displayCountry.assetCircleFlag,
+                  package: 'ccp_dialog',
+                ),
               ),
             if (isNationality)
               Text(
@@ -92,7 +108,9 @@ class CountryPicker extends StatelessWidget {
               ),
             if (showDialingCode)
               Text(
-                !showLine?"${displayCountry.dialingCode} ":displayCountry.dialingCode,
+                !showLine
+                    ? "${displayCountry.dialingCode} "
+                    : displayCountry.dialingCode,
                 style: dialingCodeTextStyle,
               ),
             if (showCurrency)
@@ -113,20 +131,64 @@ class CountryPicker extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.5),
               )
           ],
-        ),
-        onTap:enabled? () {
-            if (withBottomSheet) {
-              _selectCountryWithBottomSheet(context, displayCountry);
-            } else {
-              _selectCountry(context, displayCountry);
+        ));
+  }
+
+  _renderDenseDisplay(BuildContext context, Country displayCountry,
+      bool showFlagAsset, bool showFlagCircle, bool isShowArrow) {
+    return InkWell(
+      onTap: enabled
+          ? () {
+              if (withBottomSheet) {
+                _selectCountryWithBottomSheet(context, displayCountry);
+              } else {
+                _selectCountry(context, displayCountry);
+              }
             }
-      }:(){}
+          : () {},
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Visibility(
+              visible: showFlagAsset == true,
+              child: Text(displayCountry.asset,
+                  style: const TextStyle(fontSize: 24.0))),
+          Visibility(
+              visible: showFlagCircle == true,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Image.asset(
+                  displayCountry.assetCircleFlag,
+                  package: 'ccp_dialog',
+                ),
+              )),
+          Text(displayCountry.dialingCode, style: dialingCodeTextStyle),
+          Visibility(
+            visible: isShowArrow == true,
+            child: Icon(Icons.arrow_drop_down,
+                color: colorArrow ??
+                    (Theme.of(context).brightness == Brightness.light
+                        ? Colors.grey.shade700
+                        : Colors.white70)),
+          ),
+        ],
+      ),
     );
   }
 
-  _renderDenseDisplay(
-      BuildContext context, Country displayCountry, bool showFlagAsset, bool showFlagCircle) {
+  _renderIconDisplay(BuildContext context, Country displayCountry,
+      bool showFlagAsset, bool showFlagCircle, bool isShowArrow) {
     return InkWell(
+      onTap: enabled
+          ? () {
+              if (withBottomSheet) {
+                _selectCountryWithBottomSheet(context, displayCountry);
+              } else {
+                _selectCountry(context, displayCountry);
+              }
+            }
+          : () {},
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -137,57 +199,23 @@ class CountryPicker extends StatelessWidget {
                   style: const TextStyle(fontSize: 24.0))),
           Visibility(
               visible: showFlagCircle == true,
-              child:Padding(
+              child: Padding(
                 padding: const EdgeInsets.all(8),
-                child: Image.asset(displayCountry.assetCircleFlag, package: 'ccp_dialog',),
+                child: Image.asset(
+                  displayCountry.assetCircleFlag,
+                  package: 'ccp_dialog',
+                ),
               )),
-          Text(displayCountry.dialingCode, style: dialingCodeTextStyle),
-          Icon(Icons.arrow_drop_down,
-              color:  colorArrow ?? (Theme.of(context).brightness == Brightness.light
-                  ? Colors.grey.shade700
-                  : Colors.white70)),
+          Visibility(
+            visible: isShowArrow == true,
+            child: Icon(Icons.arrow_drop_down,
+                color: colorArrow ??
+                    (Theme.of(context).brightness == Brightness.light
+                        ? Colors.grey.shade700
+                        : Colors.white70)),
+          ),
         ],
       ),
-      onTap:enabled? () {
-        if (withBottomSheet) {
-          _selectCountryWithBottomSheet(context, displayCountry);
-        } else {
-          _selectCountry(context, displayCountry);
-        }
-      }:(){},
-    );
-  }
-  
-  _renderIconDisplay(
-      BuildContext context, Country displayCountry, bool showFlagAsset, bool showFlagCircle) {
-    return InkWell(
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Visibility(
-              visible: showFlagAsset == true,
-              child: Text(displayCountry.asset,
-                  style: const TextStyle(fontSize: 24.0))),
-          Visibility(
-              visible: showFlagCircle == true,
-              child:Padding(
-                padding: const EdgeInsets.all(8),
-                child: Image.asset(displayCountry.assetCircleFlag, package: 'ccp_dialog',),
-              )),
-          Icon(Icons.arrow_drop_down,
-              color:  colorArrow ?? (Theme.of(context).brightness == Brightness.light
-                  ? Colors.grey.shade700
-                  : Colors.white70)),
-        ],
-      ),
-      onTap:enabled? () {
-        if (withBottomSheet) {
-          _selectCountryWithBottomSheet(context, displayCountry);
-        } else {
-          _selectCountry(context, displayCountry);
-        }
-      }:(){},
     );
   }
 
@@ -254,6 +282,7 @@ Future<Country?> showBottomSheet({
 
 class _CountryPickerDialog extends StatefulWidget {
   final bool withBottomSheet;
+
   const _CountryPickerDialog({
     Key? key,
     Country? defaultCountry,
@@ -304,32 +333,32 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
               shape: RoundedRectangleBorder(
                 borderRadius: widget.withBottomSheet
                     ? const BorderRadius.only(
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10))
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10))
                     : BorderRadius.circular(10),
               ),
               insetPadding: widget.withBottomSheet
                   ? EdgeInsets.zero
                   : const EdgeInsets.symmetric(
-                  horizontal: 20.0, vertical: 30.0),
+                      horizontal: 20.0, vertical: 30.0),
               child: Column(
                 children: <Widget>[
                   TextField(
                     decoration: InputDecoration(
                       hintText:
-                      MaterialLocalizations.of(context).searchFieldLabel,
+                          MaterialLocalizations.of(context).searchFieldLabel,
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: filter == ""
                           ? const SizedBox(
-                        height: 0.0,
-                        width: 0.0,
-                      )
+                              height: 0.0,
+                              width: 0.0,
+                            )
                           : InkWell(
-                        child: const Icon(Icons.clear),
-                        onTap: () {
-                          controller.clear();
-                        },
-                      ),
+                              child: const Icon(Icons.clear),
+                              onTap: () {
+                                controller.clear();
+                              },
+                            ),
                     ),
                     controller: controller,
                   ),
@@ -357,7 +386,6 @@ class _CountryPickerDialogState extends State<_CountryPickerDialog> {
                                       margin: const EdgeInsets.only(left: 8.0),
                                       child: Text(
                                         country.name,
-
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                       ),

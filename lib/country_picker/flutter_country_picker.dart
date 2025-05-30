@@ -28,7 +28,7 @@ class CountryPicker extends StatelessWidget {
     this.withBottomSheet = false,
     this.enabled = true,
     this.showArrow = true,
-    this.flagSize;
+    this.flagSize
   }) : super(key: key);
 
   final Country selectedCountry;

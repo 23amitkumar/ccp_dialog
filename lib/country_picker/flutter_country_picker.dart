@@ -28,6 +28,7 @@ class CountryPicker extends StatelessWidget {
     this.withBottomSheet = false,
     this.enabled = true,
     this.showArrow = true,
+    this.flagSize;
   }) : super(key: key);
 
   final Country selectedCountry;
@@ -50,6 +51,7 @@ class CountryPicker extends StatelessWidget {
   final TextStyle? currencyTextStyle;
   final TextStyle? currencyISOTextStyle;
   final bool isNationality;
+  final double? flagSize;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +86,7 @@ class CountryPicker extends StatelessWidget {
             if (showFlag)
               Text(
                 displayCountry.asset,
-                style: const TextStyle(fontSize: 32),
+                style:  TextStyle(fontSize: flagSize??32),
               ),
             if (showFlagCircle)
               Padding(
@@ -97,7 +99,7 @@ class CountryPicker extends StatelessWidget {
             if (isNationality)
               Text(
                 displayCountry.asset,
-                style: const TextStyle(fontSize: 24),
+                style: TextStyle(fontSize: flagSize??24),
               ),
             if (showName)
               Expanded(
@@ -153,7 +155,7 @@ class CountryPicker extends StatelessWidget {
           Visibility(
               visible: showFlagAsset == true,
               child: Text(displayCountry.asset,
-                  style: const TextStyle(fontSize: 24.0))),
+                  style: TextStyle(fontSize:flagSize?? 24.0))),
           Visibility(
               visible: showFlagCircle == true,
               child: Padding(
@@ -196,7 +198,7 @@ class CountryPicker extends StatelessWidget {
           Visibility(
               visible: showFlagAsset == true,
               child: Text(displayCountry.asset,
-                  style: const TextStyle(fontSize: 24.0))),
+                  style: TextStyle(fontSize: flagSize??24.0))),
           Visibility(
               visible: showFlagCircle == true,
               child: Padding(
